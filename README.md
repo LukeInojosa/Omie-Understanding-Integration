@@ -89,13 +89,26 @@ Repositório para documentar sistema Omie a fim realizar integração
 
         }
         Cliente {
-            _ razaoSocial
-            _ CNPJ-CPF
-            _ nomeFantasia
-            _ dadosBancarios
-            _ contato
-            _ endereco
-            _ tags
+            integer     codigo_cliente_omie         "codigo do cliente no omie"
+            string[60]  codigo_cliente_integracao   "codigo de integracao"
+            string[60]  razao_social
+            string[20]  cnpj_cpf
+            string[100] nome_fantasia
+            string[5]   telefone1_ddd
+            string[15]  telefone1_numero
+            string[100] conato                      "nome do contato"
+            string[60]  endereco
+            string[60]  endereco_numero
+            string[60]  bairro
+            string[60]  complemento
+            string[2]   estado                      "sigla do estado"
+            string[40]  cidade
+            string[10]  cep
+            string[4]   codigo_pais
+            string[1]   pesquisar_cep               "se S, o sistema preenche logradouro, bairro e cidade, conforme dados do cep"
+            string[500] email
+            string[7]   cidade_ibge
+            string[1]   inativo                     "(S,N)"
         }
 
         Servico {
@@ -110,5 +123,5 @@ Repositório para documentar sistema Omie a fim realizar integração
             decimal     nValUnit        "valor unitario do servico"
         }
         
-      
+    
 ```
