@@ -3,18 +3,19 @@ Repositório para documentar sistema Omie a fim realizar integração
 
 ```mermaid
     erDiagram
-        OrdemDeServico ||--|{ ServicosPrestados: "tem"
-        OrdemDeServico }o--|| Cliente: "requisitante do servico"
-        OrdemDeServico ||--|{ Parcelas: "tipo de pagamento"
-        OrdemDeServico ||--o{ ProdutoDaOrdem: "eh utilizado"
-        OrdemDeServico ||--o| InformacoesAdicionais: possui
-        ProdutoDaOrdem }o--|| Produto: "eh um"
+        OrdemDeServico      ||--|{ ServicosPrestados: "tem"
+        OrdemDeServico      }o--|| Cliente: "requisitante do servico"
+        OrdemDeServico      ||--|{ Parcelas: "tipo de pagamento"
+        OrdemDeServico      ||--o| produtosUtilizados: "eh utilizado"
+        produtosUtilizados  ||--|{ produtoUtilizado: "utiliza"
+        OrdemDeServico      ||--o| InformacoesAdicionais: possui
+        produtoUtilizado    }o--|| Produto: "eh um"
 
         FornecedorDoProduto |o--|| Cliente: "eh um"
         FornecedorDoProduto }o--o{ Produto: "fornece" 
         
-        ServicosPrestados }o--|| Servico: " eh um" 
-        ServicosPrestados ||--o{ Impostos: "possui"
+        ServicosPrestados   }o--|| Servico: " eh um" 
+        ServicosPrestados   ||--o{ Impostos: "possui"
 
         ServicosPrestados {
             integer     nCodServico     "-> Servico"
@@ -33,13 +34,16 @@ Repositório para documentar sistema Omie a fim realizar integração
             decimal   _nValorISS   "valor do ISS"
         }
 
-        ProdutoDaOrdem {
-            _ quantidade
-            _ localDoEstoque
-            _ valorUnitario
-            _ desconto
-            _ tabelaDePreco
-            _ Acao "(Gerar Remessa, Gerar Pedido de Venda)"
+        produtoUtilizado{
+            integer     nCodProdutoPU "-> Produto"
+            integer     _nIdItemPU  "codigo interno da api"
+            string[1]   cAcaoItemPU "A - alterar, E- excluir , I- Inserir"
+            decimal     nQtdePU     "quantidade"
+        }
+
+        produtosUtilizados {
+            string[3]   cAcaoProdUtilizados  "REM - remessa , EST - saida do estoque"
+            string[20]  cCodCategRem         "Código da Categoria da Remessa"
         }
 
         FornecedorDoProduto{
@@ -51,7 +55,8 @@ Repositório para documentar sistema Omie a fim realizar integração
 
         Produto {
             _ descricao
-            _ codigoDoProduto
+            integer     nCodProdutoPU "Codigo de Integeracao do Produto"
+            integer     _nIdItemPU  "codigo interno da api"
             _ codigoEAN
             _ unidade
             _ precoUnitario
@@ -61,13 +66,14 @@ Repositório para documentar sistema Omie a fim realizar integração
         }
 
         Parcelas {
-            _ percentualDaParcela "em relacao valorServicos + valorProdutos"
-            _ valorDaParcela
-            _ vencimento
-            _ meioDePagamento "(A Vista,credito, PIX)"
-            _ tipoDeDocumento
-            _ gerarBoletoeEmitirNotaFiscal 
+            integer     nParcela            "1,2,3"
+            string[10]  dDtVenc             "data de vencimento da parcela"
+            decimal     nValor              "valor da parcela"
+            decimal     nPercentual         "percentual do valor do servico"
+            string[100] meio_pagamento      "01 Dinheiro, 02 Cheque ..."
+            string[1]   nao_gerar_boleto    "S para nao gerar boleto"
         }
+
         OrdemDeServico {
             string[60] cCodIntOS    "Codigo de Integracao"
             string[60] cCodIntCli   "-> Cliente"
@@ -91,15 +97,18 @@ Repositório para documentar sistema Omie a fim realizar integração
             _ endereco
             _ tags
         }
+
         Servico {
-            integer     nCodServico PK
+            string[20]  cCodServMun     "Codigo do Servico Municipal ou CNAE"
+            string[20]  cCodServLC116   "Código do Serviço conforme Lei Complementar (LC 116)."
+            integer     nCodServico     PK
             integer     nCodIntServico  "Codigo Integracao do Servico"
             text        cDescServ       "descricao do servico"
             string[9]   cNbs            "Codigo NBS do Servico"
             string[2]   cTribServ       "Tipo de Tributacao do Servico"
+            string[1]   cRetemISS       "Retem ISS (S,N)"
             decimal     nValUnit        "valor unitario do servico"
         }
         
-    
-  
+      
 ```
